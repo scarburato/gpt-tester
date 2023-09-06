@@ -31,6 +31,19 @@ def run_file(filePath, restURL):
   except Exception as e:
     print(f'An error occurred: {str(e)}')
 
+def num_file(dir):
+  if dir is None:
+      return 0
+  count = 0
+  for file_name in os.listdir(dir):
+    file_path = os.path.join(dir, file_name)
+    if os.path.isdir(file_path):
+      count += num_file(file_path)
+    if not os.path.isfile(file_path):# or not mimetypes.guess_type(file_path)[0] == 'text/plain':
+      continue
+    count += 1
+  return count
+
 class BonGTPWindow():
   def __init__(self):
     # Props
@@ -40,6 +53,7 @@ class BonGTPWindow():
     self.mw = QMainWindow(None)
     self.uimw = Ui_MainWindow()
     self.uimw.setupUi(self.mw)
+    self.uimw.progressBar.setValue(0)
 
     # Triggers
     self.uimw.actionOpen_Folder.triggered.connect(lambda: self.openFolderTrigger())
@@ -96,6 +110,8 @@ class BonGTPWindow():
   def run_all_dir(self, dir, restURL):
     if dir is None:
       return
+    self.uimw.progressBar.setValue(0)
+    self.uimw.progressBar.setMaximum(num_file(dir))
     for file_name in os.listdir(dir):
       file_path = os.path.join(dir, file_name)
       if os.path.isdir(file_path):
@@ -103,6 +119,7 @@ class BonGTPWindow():
       if not os.path.isfile(file_path):# or not mimetypes.guess_type(file_path)[0] == 'text/plain':
         continue
       print(run_file(file_path, restURL))
+      self.uimw.progressBar.setValue(self.uimw.progressBar.value() + 1)
 
 if __name__ == '__main__':
   app = QApplication(sys.argv)
