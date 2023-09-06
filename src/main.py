@@ -7,18 +7,20 @@ import transformers
 import torch
 import re
 import os
+import socket
 
 BUFFER_SIZE = 1
 DEVICE = "cpu"
 MASK_FILLING_MODEL_NAME = "t5-large" #"t5-3b" # "t5-large"
+CACHE_FOLDER = None
 
 pattern = re.compile(r"<extra_id_\d+>")
 
 # @TODO capire che è sto model_max_len
-mask_model = transformers.AutoModelForSeq2SeqLM.from_pretrained(MASK_FILLING_MODEL_NAME, **{}, **dict(torch_dtype=torch.bfloat16), cache_dir="./cache")
-mask_tokenizer = transformers.AutoTokenizer.from_pretrained(MASK_FILLING_MODEL_NAME, model_max_length=mask_model.config.n_positions, cache_dir="./cache")
-base_model = transformers.AutoModelForCausalLM.from_pretrained("gpt2-medium", **{}, cache_dir="./cache")
-base_tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2-medium", **{}, cache_dir="./cache")
+mask_model = transformers.AutoModelForSeq2SeqLM.from_pretrained(MASK_FILLING_MODEL_NAME, **{}, **dict(torch_dtype=torch.bfloat16))
+mask_tokenizer = transformers.AutoTokenizer.from_pretrained(MASK_FILLING_MODEL_NAME, model_max_length=mask_model.config.n_positions)
+base_model = transformers.AutoModelForCausalLM.from_pretrained("gpt2-medium", **{})
+base_tokenizer = transformers.AutoTokenizer.from_pretrained("gpt2-medium", **{})
 
 def tokenize_and_mask(text, span_length, pct, ceil_pct=False):
     tokens = text.split(' ')
@@ -97,6 +99,30 @@ def get_ll(text):
 
 def get_lls(texts):
     return [get_ll(text) for text in texts]
+
+
+def evaluate_texts(texts: list):
+    texts_masked = [tokenize_and_mask(x, 2, 0.35) for x in texts]
+    print(len(texts_masked))
+
+    texts_masked = replace_masks(texts_masked)
+    print("finito replace_masks")
+
+    # raw_fills = replace_masks(texts_masked)
+    # print("finito texts_masked")
+
+    extracted_fills = extract_fills(texts_masked)
+    print("finito extract_fills")
+
+    perturbed_texts = apply_extracted_fills(texts_masked, extracted_fills)
+    print("finito apply_extracted_fills")
+
+    orginal_lls = get_lls(texts)
+    perturbed_lls = get_lls(perturbed_texts)
+    print("finito getllss")
+
+    return [{"isGPT": abs(oll - pll) > 0.85, "lp": abs(oll - pll)} for oll, pll in zip(orginal_lls, perturbed_lls)]
+
 
 if __name__ == '__main__':
     #text = "Custom logits processors that complement the default logits processors built from arguments and generation config. If a logit processor is passed that is already created with the
