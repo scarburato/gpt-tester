@@ -1,0 +1,9 @@
+torch
+numpy
+transformers
+matplotlib
+scikit-learn
+accelerate
+bitsandbytes
+pyqt5
+pyqt5-tools
