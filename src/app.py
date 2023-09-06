@@ -2,8 +2,34 @@ import os
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+import requests
+import mimetypes
 
 from main_window import Ui_MainWindow
+
+def run_file(filePath, restURL):
+  try:
+    # Open the file for reading
+    with open(filePath, 'r') as file:
+        file_content = file.read()
+
+    # Create a dictionary containing the data to send in the request
+    payload = {
+      'text': file_content
+    }
+
+    # Send a POST request to the REST endpoint
+    response = requests.post(restURL, json=payload)
+
+    # Check the response status code
+    if response.status_code == 200:
+        return response.json().get("result")
+    else:
+        print(f'Failed to send file content. Status code: {response.status_code}')
+  except FileNotFoundError:
+    print(f'File not found: {filePath}')
+  except Exception as e:
+    print(f'An error occurred: {str(e)}')
 
 class BonGTPWindow():
   def __init__(self):
@@ -18,6 +44,7 @@ class BonGTPWindow():
     # Triggers
     self.uimw.actionOpen_Folder.triggered.connect(lambda: self.openFolderTrigger())
     self.uimw.pushButtonOpenFolder.clicked.connect(lambda: self.openFolderTrigger())
+    self.uimw.pushButtonRun.clicked.connect(lambda: self.run_all_dir())
 
   def show(self):
     self.mw.show()
@@ -65,6 +92,17 @@ class BonGTPWindow():
     self.uimw.textPreview.clear()
     self.currentFile = None
     self.currentDir = None
+
+  def run_all_dir(self, dir, restURL):
+    if dir is None:
+      return
+    for file_name in os.listdir(dir):
+      file_path = os.path.join(dir, file_name)
+      if os.path.isdir(file_path):
+        self.run_all_dir(file_path, restURL)
+      if not os.path.isfile(file_path) or not mimetypes.guess_type(file_path)[0] == 'text/plain':
+        continue
+      print(run_file(file_path, restURL))
 
 if __name__ == '__main__':
   app = QApplication(sys.argv)
