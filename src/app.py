@@ -44,7 +44,7 @@ class BonGTPWindow():
     # Triggers
     self.uimw.actionOpen_Folder.triggered.connect(lambda: self.openFolderTrigger())
     self.uimw.pushButtonOpenFolder.clicked.connect(lambda: self.openFolderTrigger())
-    self.uimw.pushButtonRun.clicked.connect(lambda: self.run_all_dir())
+    self.uimw.pushButtonRun.clicked.connect(lambda: self.run_all_dir(self.currentDir, "http://localhost:5000/evaluate"))
 
   def show(self):
     self.mw.show()
@@ -100,7 +100,7 @@ class BonGTPWindow():
       file_path = os.path.join(dir, file_name)
       if os.path.isdir(file_path):
         self.run_all_dir(file_path, restURL)
-      if not os.path.isfile(file_path) or not mimetypes.guess_type(file_path)[0] == 'text/plain':
+      if not os.path.isfile(file_path):# or not mimetypes.guess_type(file_path)[0] == 'text/plain':
         continue
       print(run_file(file_path, restURL))
 
