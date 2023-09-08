@@ -1,15 +1,17 @@
 This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: report.aux
-A level-1 auxiliary file: chapters/Frontespizio.aux
-A level-1 auxiliary file: chapters/Abstract.aux
-A level-1 auxiliary file: chapters/Chapter1.aux
-A level-1 auxiliary file: chapters/AppendiceA.aux
+A level-1 auxiliary file: chapters/Frontpage.aux
+A level-1 auxiliary file: chapters/Introduction.aux
+A level-1 auxiliary file: chapters/Methodology.aux
+A level-1 auxiliary file: chapters/Application.aux
+A level-1 auxiliary file: chapters/Conclusion.aux
+A level-1 auxiliary file: chapters/AppendixA.aux
 The style file: plain.bst
 Database file #1: chapters/Bibliografy.bib
 You've used 1 entry,
             2118 wiz_defined-function locations,
-            509 strings with 4236 characters,
+            511 strings with 4286 characters,
 and the built_in function-call counts, 256 in all, are:
 = -- 23
 > -- 7
