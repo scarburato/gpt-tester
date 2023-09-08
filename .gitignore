@@ -11,7 +11,10 @@ samples/*
 *.toc
 *.lof
 *.fls
+*.bbl
+*.blg
 *.fdb_latexmk
+
 
 ### VS Code ###
 .vscode/
