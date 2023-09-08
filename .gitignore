@@ -1,3 +1,14 @@
 .idea
 __pycache__
 samples/*
+
+#ScHiFoTeX
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.pdf
+doc/*.gz
+doc/*.toc
+
+### VS Code ###
+.vscode/
