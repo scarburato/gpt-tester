@@ -3,12 +3,15 @@ __pycache__
 samples/*
 
 #ScHiFoTeX
-doc/*.aux
-doc/*.log
-doc/*.out
-doc/*.pdf
-doc/*.gz
-doc/*.toc
+*.aux
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
+*.lof
+*.fls
+*.fdb_latexmk
 
 ### VS Code ###
 .vscode/
