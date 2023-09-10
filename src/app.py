@@ -47,8 +47,12 @@ def num_file(dir):
 
 class BonGTPFileSystemModel(QFileSystemModel):
 
-  def columnCount(self, parent=None, check=lambda file: "???", *args, **kwargs):
+
+  def __init__(self, parent, check=lambda file: "???"):
     self.check = check
+    super().__init__(parent)
+
+  def columnCount(self, parent=None, *args, **kwargs):
     self.myIndex = super(BonGTPFileSystemModel, self).columnCount()
     return self.myIndex + 1
 
@@ -101,7 +105,7 @@ class BonGTPWindow():
     self.currentDir = dir if len(dir) > 0 else None
     print(self.currentDir)
 
-    self.dirModel = BonGTPFileSystemModel(None)
+    self.dirModel = BonGTPFileSystemModel(None, check=lambda file: self.update_index_column(file))
     self.dirModel.setRootPath(QDir.rootPath())
     self.dirModel.setFilter(QDir.NoDotAndDotDot | QDir.Filter.AllEntries)
 
@@ -144,7 +148,7 @@ class BonGTPWindow():
     if filepath not in self.results:
       return "???"
 
-    return self.results[filepath]
+    return str(self.results[filepath]["isGPT"])
 
   def clear_all(self):
     self.uimw.textPreview.clear()
