@@ -7,3 +7,4 @@ accelerate
 bitsandbytes
 pyqt5
 pyqt5-tools
+flask
