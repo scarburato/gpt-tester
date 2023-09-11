@@ -125,7 +125,7 @@ def evaluate_texts(texts: list, N=3):
         print("finito get losses")
 
         perturbed_lls_history.append(perturbed_lls)
-        total_lp = [sum_lp + (orginal_lp-perturbed_lp) for sum_lp, orginal_lp, perturbed_lp in zip(total_lp, orginal_lls, perturbed_lls)]
+        total_lp = [sum_lp + (orginal_lp - perturbed_lp) for sum_lp, orginal_lp, perturbed_lp in zip(total_lp, orginal_lls, perturbed_lls)]
 
     total_lp = [sum / N for sum in total_lp]
 
