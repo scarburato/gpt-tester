@@ -138,8 +138,8 @@ if __name__ == '__main__':
     folder = "samples"
 
     for filename in os.listdir(folder):
-        #if filename not in ["2", "7"]:
-        #    continue
+        if int(filename) % 2 == 0:
+            continue
 
         fn = os.path.join(folder, filename)
         print(fn)

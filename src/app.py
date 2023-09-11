@@ -2,6 +2,7 @@ import os
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 import requests
 import mimetypes
 
@@ -62,6 +63,16 @@ class BonGTPFileSystemModel(QFileSystemModel):
     return "isGPT"
 
   def data(self, index, role=None):
+    # Row color
+    if role == Qt.ItemDataRole.BackgroundColorRole:
+      path = index.data(QFileSystemModel.FilePathRole)
+      isGPT = self.check(path)
+      if isGPT == "True":
+        return QColor("red")
+
+      return super(BonGTPFileSystemModel, self).data(index, role)
+
+    # My colomun handler
     if index.column() == self.myIndex:
       if role == Qt.ItemDataRole.DisplayRole:
         path = index.data(QFileSystemModel.FilePathRole)
@@ -137,7 +148,8 @@ class BonGTPWindow():
       self.uimw.textPreview.setPlainText(file.read())
 
     if self.currentFile in self.results:
-      self.uimw.textProcessStatus.setText(str(self.results[self.currentFile]))
+      r = self.results[self.currentFile]
+      self.uimw.textProcessStatus.setText("IS GPT " + str(r["isGPT"]) + "\tlp = " + str(r["f"]))
     else:
       self.uimw.textProcessStatus.setText("Ready")
 
