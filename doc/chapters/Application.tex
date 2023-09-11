@@ -67,8 +67,10 @@ Basically we replace groups of tokens with a special token \texttt{<extra\_id\_$
 \paragraph{}
 Our application has only one REST endpoint, \texttt{/evaluate}, such endpoint exposes the functionality \texttt{evaluate\_texts} to clients
 
-\lstinputlisting[firstline=9,lastline=14,language=Python]
+\lstinputlisting[firstline=11,lastline=16,language=Python]
 {../src/backend.py}
+
+of course a big organization may decide to offload such computationally heavy task to the \textit{Cloud} and rely on OpenAI's metered services and their better-performing GPT models. Such approach would promote the system to a 3-tier system.
 
 \section{Frontend}
 
@@ -107,7 +109,7 @@ its layout and features.
 	\label{fig:screen}
 \end{figure}
 
-
+\paragraph{}
 In conclusion, our innovative document scanning application powered by Python and Qt5 offers organizations a 
 convenient and efficient solution for identifying and processing gpt-generated texts. Its user-friendly 
 interface and batch processing capabilities make it an indispensable tool for enhancing productivity and accuracy 
