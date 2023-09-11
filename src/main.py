@@ -101,65 +101,52 @@ def get_lls(texts):
     return [get_ll(text) for text in texts]
 
 
-def evaluate_texts(texts: list):
-    texts_masked = [tokenize_and_mask(x, 2, 0.35) for x in texts]
-    print(len(texts_masked))
-
-    texts_masked = replace_masks(texts_masked)
-    print("finito replace_masks")
-
-    # raw_fills = replace_masks(texts_masked)
-    # print("finito texts_masked")
-
-    extracted_fills = extract_fills(texts_masked)
-    print("finito extract_fills")
-
-    perturbed_texts = apply_extracted_fills(texts_masked, extracted_fills)
-    print("finito apply_extracted_fills")
-
+def evaluate_texts(texts: list, N=3):
     orginal_lls = get_lls(texts)
-    perturbed_lls = get_lls(perturbed_texts)
-    print("finito getllss")
+    print("finito get losses for original texts")
 
-    return [{"isGPT": abs(oll - pll) > 0.85, "lp": abs(oll - pll)} for oll, pll in zip(orginal_lls, perturbed_lls)]
+    perturbed_lls_history = []
+    total_lp = [0 for _ in range(0, len(texts))]
+    assert N >= 1
+    for i in range(0, N):
+        print("it ", i)
+
+        texts_masked = [tokenize_and_mask(x, 2, 0.35) for x in texts]
+        texts_masked = replace_masks(texts_masked)
+        print("finito replace_masks")
+
+        extracted_fills = extract_fills(texts_masked)
+        print("finito extract_fills")
+
+        perturbed_texts = apply_extracted_fills(texts_masked, extracted_fills)
+        print("finito apply_extracted_fills")
+
+        perturbed_lls = get_lls(perturbed_texts)
+        print("finito get losses")
+
+        perturbed_lls_history.append(perturbed_lls)
+        total_lp = [sum_lp + orginal_lp/perturbed_lp for sum_lp, orginal_lp, perturbed_lp in zip(total_lp, orginal_lls, perturbed_lls)]
+
+    total_lp = [sum / N for sum in total_lp]
+
+    return [{"isGPT": f > 0.85, "f": f} for f in total_lp]
 
 
 if __name__ == '__main__':
-    #text = "Custom logits processors that complement the default logits processors built from arguments and generation config. If a logit processor is passed that is already created with the
-    # arguments or a generation config an error is thrown. This feature is intended for advanced users."
-
     texts = []
     labels = []
     folder = "samples"
 
     for filename in os.listdir(folder):
-        if filename not in ["2", "7"]:
-            continue
+        #if filename not in ["2", "7"]:
+        #    continue
 
         fn = os.path.join(folder, filename)
         print(fn)
         with open(fn, 'r') as f:
             texts.append(f.read())
-            labels.append("MACCHINA" if int(filename) < 5 else "UOMO")
+            labels.append("MACCHINA" if int(filename) < 5 else "UOMO___")
 
-    texts_masked = [tokenize_and_mask(x, 2, 0.35) for x in texts]
-    print(len(texts_masked))
-
-    texts_masked = replace_masks(texts_masked)
-    print("finito replace_masks")
-
-    #raw_fills = replace_masks(texts_masked)
-    #print("finito texts_masked")
-
-    extracted_fills = extract_fills(texts_masked)
-    print("finito extract_fills")
-
-    perturbed_texts = apply_extracted_fills(texts_masked, extracted_fills)
-    print("finito apply_extracted_fills")
-
-    orginal_lls = get_lls(texts)
-    perturbed_lls = get_lls(perturbed_texts)
-    print("finito getllss")
-
-    for label, oll, pll in zip(labels, orginal_lls, perturbed_lls):
-        print(label + '\t' + str(oll) + '\t' + str(pll) + '\n' + str(abs(oll - pll)))
+    res = evaluate_texts(texts)
+    for r, l in zip(res, labels):
+        print(l, "\t", r)
