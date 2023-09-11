@@ -14,7 +14,70 @@ a few clicks, making it a valuable asset for any workflow.
 \paragraph{Technology Stack} Our application is built using Python and relies on the Qt5 framework, which is known 
 for its cross-platform compatibility, to create an intuitive and user-friendly graphical interface.
 
-\section{Layout and Features}
+\paragraph{Paradigm}
+Our application uses a \textit{client-server} approach, the server, the \textbf{backend} of the system, processes the frontend's queries, that are texts to be analyzed, and replies back with the result. The client, the \textbf{frontend} of the system, is the Qt5 program.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/Application/diagramma}
+	\caption{Communication through RESTful API}
+	\label{fig:diagramma}
+\end{figure}
+
+\section{Backend}
+
+\paragraph{Technologies}
+We used the following technologies:
+
+\begin{itemize}
+	\item \textbf{Flask} to create our backend as it provides an « ideal framework to build RESTful web services due to its lightweight nature » \cite{grinberg2018flask}.
+	
+	\item \textbf{Transformers}, a \textit{Hugginface}'s Python library « with the
+	goal of opening up these advances [in higher-capacity model] to the
+	wider machine learning community. The library consists of carefully engineered state-of-the art Transformer architectures under a
+	unified API » \cite{wolf2020huggingfaces}.
+	
+	\item Optionally, \textbf{OpenAI's APIs} if GPT-3 is used as language model.
+\end{itemize}
+
+\subsection{Transformers}
+
+\paragraph{Metric}
+The function \texttt{evaluate\_texts} performs the operations described in Chapter \ref{chapter:meth}
+
+\lstinputlisting[firstline=104,lastline=132,language=Python]
+{../src/main.py}
+
+\paragraph{Models}
+To avoid using OpenAI's APIs, since they're metered \cite{openaiprice}, we've decided to use local models, such models are loaded through the Transformers library:
+
+\lstinputlisting[firstline=20,lastline=24,language=Python]
+{../src/main.py}
+
+\paragraph{Perturbations}
+Text's perturbation are generated as follows:
+
+\lstinputlisting[firstline=25,lastline=62,language=Python]
+{../src/main.py}
+
+Basically we replace groups of tokens with a special token \texttt{<extra\_id\_$i$>}, which is then replaced by T5 with something it thinks fits well, basically rephrasing the text.
+
+\subsection{RESTful API}
+
+\paragraph{}
+Our application has only one REST endpoint, \texttt{/evaluate}, such endpoint exposes the functionality \texttt{evaluate\_texts} to clients
+
+\lstinputlisting[firstline=9,lastline=14,language=Python]
+{../src/backend.py}
+
+\section{Frontend}
+
+\subsection{RESTful requests}
+
+\lstinputlisting[firstline=10,lastline=32,language=Python]
+{../src/app.py}
+
+\subsection{GUI Features}
 
 \paragraph{Folder Selection} One of the key features of our application is the ability to effortlessly select the 
 target folder for document scanning and analysis. This ensures that users can easily pinpoint the location of the 

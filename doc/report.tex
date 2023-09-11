@@ -60,6 +60,9 @@
   \renewcommand{\headrulewidth}{0pt}
 }
 
+% Cambio carattere per monospaziato
+\renewcommand{\ttdefault}{pcr}
+
 % Stile del codice
 \lstdefinestyle{codeStyle}{
     % Colore dei commenti
@@ -71,7 +74,7 @@
     % Colore delle stringhe
     stringstyle=\color{violet},
     % Dimensione e stile del testo
-    basicstyle=\ttfamily\footnotesize,
+    basicstyle=\ttfamily\scriptsize,
     % newline solo ai whitespaces
     breakatwhitespace=false,     
     % newline si/no
@@ -91,7 +94,11 @@
     % Mostra i tab
     showtabs=false,
     % Dimensione dei tab
-    tabsize=2
+    tabsize=2,
+    % accenti
+    literate={á}{{\'a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {è}{{\`e}}1,
+    % wrap long lines on new line
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 } \lstset{style=codeStyle}
 
 % Stile di codice per dimensioni maggiori, in cui ho avuto bisogno di un testo più picolo (ad esempio se si vuole inserire del codice che ha linee molto lunghe). Per usare questo stile piuttosto che il precedente, usare 
